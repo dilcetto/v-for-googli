@@ -469,6 +469,12 @@ setInterval(()=> spawnPetalBurst(6), 2600);
     softToast("Bouquet sealed. You can continue when ready.");
   });
 
+  continueBtn?.addEventListener("click", () => {
+    unlockNext();
+    showScene(2);
+    continueBtn.hidden = true;
+  });
+
   // ---- Gift link behavior (overlay)
   function handleGiftLinkIfPresent() {
     const ids = decodeBouquetFromUrl();
