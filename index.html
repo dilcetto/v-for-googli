@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Floating Sky Valentine</title>
+  <meta name="theme-color" content="#f6f3ff" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <!-- Ambient layers -->
+  <div class="sky">
+    <div class="sky-gradient"></div>
+    <div class="clouds clouds-a"></div>
+    <div class="clouds clouds-b"></div>
+    <div class="sparkles" aria-hidden="true"></div>
+
+    <!-- Floating islands (decor) -->
+    <div class="island i1"></div>
+    <div class="island i2"></div>
+    <div class="island i3"></div>
+  </div>
+
+  <canvas id="petals"></canvas>
+
+  <!-- HUD -->
+  <header class="hud glass">
+    <div class="hud-left">
+      <div class="badge">☁️ floating sky world</div>
+      <div class="progress" id="progressText">Scene 1/4</div>
+    </div>
+    <div class="hud-right">
+      <button class="chip" id="copyLinkBtn" title="Copy share link">Copy link</button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+
+  <!-- Scene 1 -->
+<section class="scene active scene-bouquet" data-scene="1" id="scene1" aria-label="Flower Language Bouquet">
+  <div class="sky-bg" aria-hidden="true"></div>
+
+  <!-- Full-screen overlay when opening a gift link -->
+  <div id="giftOverlay" class="gift-overlay" hidden>
+    <div class="gift-overlay-inner glass soft">
+      <div class="gift-title">Someone made this for you.</div>
+
+      <div class="gift-preview">
+        <div class="bouquet-wrap large" aria-hidden="true">
+          <div class="bouquet-silhouette"></div>
+          <div id="giftBouquetCanvas" class="bouquet-canvas"></div>
+        </div>
+
+        <div class="gift-message">
+          <div class="muted tiny">Their bouquet says…</div>
+          <div id="giftMessage" class="poem"></div>
+        </div>
+      </div>
+
+      <button id="makeOneBackBtn" class="btn primary">Make one back</button>
+    </div>
+  </div>
+
+  <div class="scene-inner glass">
+    <h1 class="title">Flower Language Bouquet</h1>
+    <p class="subtitle">A quiet, magical place where feelings are arranged like flowers.</p>
+
+    <div class="panel glass soft bouquet-panel">
+      <!-- LEFT: Flower Library -->
+      <div class="col col-left">
+        <div class="col-header">
+          <h2 class="col-title">Flower library</h2>
+          <p class="col-subtitle">Tap a flower to reveal its language.</p>
+        </div>
+
+        <div id="flowerGrid" class="flower-grid" aria-label="Flower Library"></div>
+      </div>
+
+      <!-- CENTER: Bouquet Canvas -->
+      <div class="col col-center">
+        <div class="col-header center-head">
+          <h2 class="col-title">Build your bouquet</h2>
+          <div id="counter" class="counter-pill">0 / 7 flowers</div>
+        </div>
+
+        <div class="bouquet-stage">
+          <div class="bouquet-wrap" aria-label="Bouquet Canvas">
+            <div class="bouquet-silhouette" aria-hidden="true"></div>
+            <div id="bouquetCanvas" class="bouquet-canvas" role="application"></div>
+          </div>
+        </div>
+
+        <button id="sealBtn" class="btn primary seal-btn" disabled>
+          Seal bouquet
+        </button>
+
+        <!-- keep as hook for your existing scene navigation -->
+        <button id="continueBtn" class="btn ghost continue-btn" hidden>
+          Continue
+        </button>
+      </div>
+
+      <!-- RIGHT: Your bouquet says… -->
+      <div class="col col-right">
+        <div class="col-header">
+          <h2 class="col-title">Your bouquet says…</h2>
+          <p class="col-subtitle">A message grows as you choose.</p>
+        </div>
+
+        <div class="say-panel">
+          <div class="muted tiny">Selected</div>
+          <div id="selectedList" class="selected-list" aria-label="Selected flowers"></div>
+
+          <div class="divider"></div>
+
+          <div class="muted tiny">Message</div>
+          <div id="poem" class="poem" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seal Modal -->
+  <div id="sealModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="sealTitle">
+    <div class="modal-backdrop" data-close="1"></div>
+
+    <div class="modal-card glass soft">
+      <div class="modal-head">
+        <div>
+          <div id="sealTitle" class="modal-title">Gift bouquet</div>
+          <div class="muted tiny">A little ritual, sealed into a link.</div>
+        </div>
+        <button class="icon-btn" id="closeModalBtn" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-preview">
+          <div class="bouquet-wrap" aria-hidden="true">
+            <div class="bouquet-silhouette"></div>
+            <div id="modalBouquetCanvas" class="bouquet-canvas"></div>
+          </div>
+        </div>
+
+        <div class="modal-message">
+          <div class="muted tiny">Your bouquet says…</div>
+          <div id="modalPoem" class="poem"></div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <!--copyLinkBtn -->
+        <button id="copyGiftLinkBtn" class="btn primary">Copy gift link</button>
+        <button id="modalContinueBtn" class="btn ghost">Continue</button>
+      </div>
+
+      <div id="copyHint" class="tiny muted" style="margin-top:10px;"></div>
+    </div>
+  </div>
+</section>
+
+    <!-- Scene 2 -->
+    <section class="scene" data-scene="2" id="scene2">
+      <div class="scene-inner glass">
+        <h1 class="title">Luck &amp; Love</h1>
+        <p class="subtitle">Spin softly. The sky decides.</p>
+
+        <div class="panel glass soft center">
+          <div class="wheel-wrap">
+            <div class="wheel" id="wheel">
+              <div class="wheel-center">♡</div>
+              <div class="wheel-pointer" aria-hidden="true"></div>
+              <!-- wedges injected by JS -->
+            </div>
+          </div>
+
+          <div class="row center">
+            <button class="btn" id="spinBtn">Spin</button>
+            <button class="btn ghost" id="continue2" disabled>Continue</button>
+          </div>
+
+          <div class="result glass soft hidden" id="spinResult">
+            <div class="result-title" id="resultTitle">—</div>
+            <div class="tiny muted">(*The wheel can land on everything but Lego.)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scene 3 -->
+    <section class="scene" data-scene="3" id="scene3">
+      <div class="scene-inner glass">
+        <h1 class="title">Memory Vault</h1>
+        <p class="subtitle">We’ll think about it later.</p>
+
+        <div class="panel glass soft center">
+          <div class="vault">
+            <div class="vault-door"></div>
+            <div class="vault-glow"></div>
+          </div>
+          <p class="tiny muted">A door that hums quietly, like it remembers you.</p>
+          <button class="btn" id="continue3">Continue</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scene 4 -->
+    <section class="scene" data-scene="4" id="scene4">
+      <div class="scene-inner glass">
+        <div class="card glow-card glass soft">
+          <h1 class="title big">Would you like to be my Valentine?</h1>
+
+          <div class="row center">
+            <button class="btn" id="yesBtn">YES 💗</button>
+            <button class="btn ghost" id="noBtn">NO 🙃</button>
+          </div>
+
+          <div class="final hidden" id="finalScreen">
+            <div class="final-line">Zero euros. 100% feelings.</div>
+            <div class="final-line">Happy Valentine’s.</div>
+            <div class="row center">
+              <button class="btn" id="copyFinalBtn">Copy / Share the link</button>
+              <button class="btn ghost" id="restartBtn">Restart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
