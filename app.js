@@ -7,8 +7,6 @@ const $$ = (q) => Array.from(document.querySelectorAll(q));
 const state = {
   scene: 1,
   unlocked: 1,
-  bouquet: [],        // placed items for current user
-  receivedBouquet: null,
   spinDone: false,
 };
 
@@ -44,27 +42,6 @@ function loadProgress(){
     const p = JSON.parse(localStorage.getItem("skyval_progress") || "{}");
     if (p.unlocked) state.unlocked = p.unlocked;
   }catch{}
-}
-
-/* -------------------------
-   Share link helpers
--------------------------- */
-// bouquet gift is encoded in URL hash, so GitHub Pages path issues don't matter.
-function encodeGift(payload){
-  const json = JSON.stringify(payload);
-  const b64 = btoa(unescape(encodeURIComponent(json)));
-  return `#gift=${b64}`;
-}
-function decodeGiftFromHash(){
-  const h = location.hash || "";
-  const m = h.match(/#gift=([^&]+)/);
-  if(!m) return null;
-  try{
-    const json = decodeURIComponent(escape(atob(m[1])));
-    return JSON.parse(json);
-  }catch{
-    return null;
-  }
 }
 
 function baseURL(){
@@ -871,7 +848,7 @@ copyFinalBtn.addEventListener("click", async ()=>{
 });
 
 restartBtn.addEventListener("click", ()=>{
-  // reset progress but keep received gift if any
+  // reset progress but keep rest of state untouched
   localStorage.removeItem("skyval_progress");
   location.hash = "";
   location.reload();
@@ -882,15 +859,6 @@ restartBtn.addEventListener("click", ()=>{
 -------------------------- */
 function boot(){
   loadProgress();
-
-  // Check gift in hash
-  const gift = decodeGiftFromHash();
-  if(gift?.bouquet){
-    state.receivedBouquet = gift;
-    renderReceivedBouquet(gift);
-    // subtle petals when gift arrives
-    spawnPetalBurst(22);
-  }
 
   // Start at max unlocked scene, but never beyond 1 unless user progressed
   showScene(Math.min(state.unlocked, 4));
@@ -903,6 +871,5 @@ function boot(){
     yesBtn.disabled = true;
   }
 
-  renderTray();
 }
 boot();
