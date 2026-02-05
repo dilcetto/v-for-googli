@@ -158,7 +158,7 @@ setInterval(()=> spawnPetalBurst(6), 2600);
   const selectedList = $("#selectedList");
   const poemEl = $("#poem");
   const sealBtn = $("#sealBtn");
-  const continueBtn = $("#continueBtn");
+  const continueBtn = $("#continue1");
 
   const sealModal = $("#sealModal");
   const modalBouquetCanvas = $("#modalBouquetCanvas");
@@ -176,86 +176,116 @@ setInterval(()=> spawnPetalBurst(6), 2600);
   // ---- Constants
   const MAX = 7;
   const MIN_TO_SEAL = 3;
-  const URL_PARAM = "b"; // bouquet data
+  const URL_PARAM = "gift"; // bouquet data param per spec
+  const SOFT_GENTLE_LOVE = ["rose", "peony", "lavender", "daisy"]; // starter bouquet shown on load
 
-  // ---- Flower data (10) — all inline SVG
-  // Watercolor-ish: soft gradients + blurred highlights via simple SVG filters.
+  // ---- Flower data (10) — watercolor inline SVG + poetic lines
   const FLOWERS = [
     {
       id: "rose",
       name: "Rose",
       keywords: ["admiration", "warmth"],
-      meaning: "“I look at you and soften.”",
+      poeticLines: [
+        "I look at you and soften.",
+        "You make love feel safe."
+      ],
       svg: svgFlower("#ff7fb0", "#ffd1e6", "rose")
     },
     {
       id: "lily",
       name: "Lily",
       keywords: ["devotion", "sincerity"],
-      meaning: "“The kind of devotion that stays quiet but deep.”",
+      poeticLines: [
+        "Quiet devotion, deep and steady.",
+        "I stay, gently."
+      ],
       svg: svgFlower("#ffffff", "#dfe8ff", "lily")
     },
     {
       id: "peony",
       name: "Peony",
-      keywords: ["romance", "tenderness"],
-      meaning: "“Soft love that blooms slowly.”",
+      keywords: ["tenderness", "romance"],
+      poeticLines: [
+        "Soft love that blooms slowly.",
+        "No rush. Just real."
+      ],
       svg: svgFlower("#ffb3d1", "#ffe1ee", "peony")
     },
     {
       id: "tulip",
       name: "Tulip",
-      keywords: ["choosing someone"],
-      meaning: "“Out of everyone, I choose you.”",
+      keywords: ["choosing you", "closeness"],
+      poeticLines: [
+        "Out of everyone, I choose you.",
+        "Again and again."
+      ],
       svg: svgFlower("#ff6d6d", "#ffd0d0", "tulip")
     },
     {
       id: "daisy",
       name: "Daisy",
-      keywords: ["gentle joy"],
-      meaning: "“You make ordinary days feel light.”",
+      keywords: ["gentle joy", "lightness"],
+      poeticLines: [
+        "You make ordinary days feel light.",
+        "You make me smile quietly."
+      ],
       svg: svgFlower("#fff7ff", "#fff2b8", "daisy")
     },
     {
       id: "lavender",
       name: "Lavender",
       keywords: ["calm", "comfort"],
-      meaning: "“You quiet the noise in my head.”",
+      poeticLines: [
+        "You quiet the noise in my head.",
+        "You feel like peace."
+      ],
       svg: svgFlower("#b79bff", "#e6dcff", "lavender")
     },
     {
-      id: "babys_breath",
-      name: "Baby’s breath",
-      keywords: ["forever", "purity"],
-      meaning: "“Something small that lasts.”",
+      id: "babysbreath",
+      name: "Baby’s Breath",
+      keywords: ["forever", "tenderness"],
+      poeticLines: [
+        "Something small that lasts.",
+        "Softness that stays."
+      ],
       svg: svgFlower("#f7fbff", "#eaf2ff", "babys")
     },
     {
       id: "camellia",
       name: "Camellia",
-      keywords: ["admiration", "specialness"],
-      meaning: "“You are someone I notice in every room.”",
+      keywords: ["special", "noticing you"],
+      poeticLines: [
+        "I notice you in every room.",
+        "You feel rare to me."
+      ],
       svg: svgFlower("#ff7a9f", "#ffe0ea", "camellia")
     },
     {
       id: "sunflower",
       name: "Sunflower",
       keywords: ["warmth", "loyalty"],
-      meaning: "“I turn toward you without thinking.”",
+      poeticLines: [
+        "I turn toward you without thinking.",
+        "You feel like sunlight."
+      ],
       svg: svgFlower("#ffcc3d", "#fff0b8", "sunflower")
     },
     {
-      id: "cherry_blossom",
-      name: "Cherry blossom",
-      keywords: ["fleeting beauty", "presence"],
-      meaning: "“Moments with you feel soft and rare.”",
+      id: "sakura",
+      name: "Cherry Blossom",
+      keywords: ["presence", "gentle moments"],
+      poeticLines: [
+        "Moments with you feel soft and rare.",
+        "I hold them carefully."
+      ],
       svg: svgFlower("#ffb7cf", "#fff0f6", "cherry")
     },
   ];
 
   // ---- State
   const state = {
-    selected: [], // array of flower ids (max 7)
+    selected: [...SOFT_GENTLE_LOVE],
   };
 
   // ---- Init
@@ -277,7 +307,9 @@ setInterval(()=> spawnPetalBurst(6), 2600);
           </div>
         </div>
 
-        <div class="flower-meaning">${escapeHtml(f.meaning)}</div>
+        <div class="flower-meaning">
+          ${f.poeticLines.map(line => `<p>${escapeHtml(line)}</p>`).join("")}
+        </div>
 
         <div class="card-actions">
           <button class="btn ghost reveal-btn" type="button">Reveal</button>
@@ -349,11 +381,11 @@ setInterval(()=> spawnPetalBurst(6), 2600);
       const r = rand(seed);
 
       // center-ish with gentle spread
-      const cx = 50 + (r() * 26 - 13);
-      const cy = 52 + (r() * 22 - 11);
+      const cx = 50 + (r() * 18 - 9);
+      const cy = 54 + (r() * 20 - 10);
 
-      const rot = (r() * 26 - 13).toFixed(2); // degrees
-      const scale = (0.92 + r() * 0.20).toFixed(3);
+      const rot = (r() * 20 - 10).toFixed(2); // degrees
+      const scale = (0.94 + r() * 0.18).toFixed(3);
 
       // z-index increases with index, but shuffle a bit for depth
       const z = 10 + index * 3 + Math.floor(r() * 3);
@@ -364,12 +396,16 @@ setInterval(()=> spawnPetalBurst(6), 2600);
     // Render
     for (const it of items) {
       const el = document.createElement("div");
-      el.className = "sticker";
+      el.className = "placed-flower";
       el.style.left = `${it.cx}%`;
       el.style.top = `${it.cy}%`;
       el.style.zIndex = String(it.z);
       el.style.setProperty("--r", `${it.rot}deg`);
-      el.style.transform = `translate(-50%,-50%) scale(${it.scale}) rotate(${it.rot}deg)`;
+      el.style.setProperty("--scale", it.scale);
+      el.style.animation = "bloomIn .45s ease";
+      el.dataset.flower = it.flower.name;
+      el.dataset.id = it.flower.id;
+      el.setAttribute("aria-label", `${it.flower.name} sticker`);
 
       el.innerHTML = it.flower.svg;
 
@@ -396,7 +432,7 @@ setInterval(()=> spawnPetalBurst(6), 2600);
     if (!selectedList) return;
 
     if (state.selected.length === 0) {
-      selectedList.innerHTML = `<div class="tiny muted">Choose flowers from the library.</div>`;
+      selectedList.innerHTML = `<div class="tiny muted">Tap a flower to add it to the wrap.</div>`;
       return;
     }
 
@@ -406,9 +442,9 @@ setInterval(()=> spawnPetalBurst(6), 2600);
 
     selectedList.innerHTML = selectedFlowers.map(f => `
       <div class="sel-item">
-        <div class="sel-left">
-          <div class="sel-name">${escapeHtml(f.name)}</div>
-          <div class="sel-keys">${escapeHtml(f.keywords.join(" • "))}</div>
+        <div class="sel-name">${escapeHtml(f.name)}</div>
+        <div class="sel-chips">
+          ${f.keywords.map(k => `<span class="keyword-chip">${escapeHtml(k)}</span>`).join("")}
         </div>
       </div>
     `).join("");
@@ -416,7 +452,7 @@ setInterval(()=> spawnPetalBurst(6), 2600);
 
   function renderPoem() {
     const poem = generatePoemFromSelection(state.selected);
-    if (poemEl) poemEl.textContent = poem || "Your message will appear here…";
+    if (poemEl) poemEl.textContent = poem || "A gentle message will bloom here…";
   }
 
   // ---- Seal flow
@@ -477,10 +513,10 @@ setInterval(()=> spawnPetalBurst(6), 2600);
 
   // ---- Gift link behavior (overlay)
   function handleGiftLinkIfPresent() {
+    if (!giftOverlay || !giftBouquetCanvas || !giftMessage) return;
     const ids = decodeBouquetFromUrl();
     if (!ids || ids.length === 0) return;
 
-    // Show overlay
     giftOverlay.hidden = false;
     document.body.style.overflow = "hidden";
 
@@ -489,24 +525,22 @@ setInterval(()=> spawnPetalBurst(6), 2600);
   }
 
   makeOneBackBtn?.addEventListener("click", () => {
-    // Close overlay and let them build their own.
+    if (!giftOverlay) return;
     giftOverlay.hidden = true;
     document.body.style.overflow = "";
 
-    // Clear the URL param without reloading
     const url = new URL(window.location.href);
     url.searchParams.delete(URL_PARAM);
     history.replaceState({}, "", url.toString());
 
-    // Reset state (fresh bouquet)
-    state.selected = [];
+    state.selected = [...SOFT_GENTLE_LOVE];
     renderAll();
   });
 
   // ---- URL encoding/decoding
   function buildGiftUrl(selectedIds) {
     const safeIds = selectedIds.filter(id => FLOWERS.some(f => f.id === id)).slice(0, MAX);
-    const payload = { v: 1, f: safeIds }; // versioned
+    const payload = { v: 1, flowers: safeIds };
     const encoded = base64UrlEncode(JSON.stringify(payload));
     const url = new URL(window.location.href);
     url.searchParams.set(URL_PARAM, encoded);
@@ -522,7 +556,12 @@ setInterval(()=> spawnPetalBurst(6), 2600);
       const json = base64UrlDecode(raw);
       const payload = JSON.parse(json);
 
-      const ids = Array.isArray(payload?.f) ? payload.f : [];
+      const ids = Array.isArray(payload?.flowers)
+        ? payload.flowers
+        : Array.isArray(payload?.f)
+          ? payload.f
+          : [];
+
       const clean = ids
         .filter(id => typeof id === "string")
         .filter(id => FLOWERS.some(f => f.id === id))
@@ -535,48 +574,63 @@ setInterval(()=> spawnPetalBurst(6), 2600);
   }
 
   // ---- Poem generation
-  // Gentle, dreamy stitching of meanings. Uses each flower’s meaning line, but blends it.
   function generatePoemFromSelection(ids) {
     const flowers = ids.map(id => FLOWERS.find(f => f.id === id)).filter(Boolean);
     if (flowers.length === 0) return "";
 
-    // For ritual feel: a few lines that weave, plus a closing line
-    const lines = [];
-
-    // Convert each flower meaning to a sentence-like line (already poetic)
-    for (const f of flowers) {
-      // Use meaning as-is, but remove outer quotes
-      const clean = f.meaning.replace(/^“|”$/g, "");
-      lines.push(clean);
+    if (flowers.length <= 2) {
+      const desiredLines = Math.max(1, flowers.length);
+      const lines = [];
+      flowers.forEach((f, idx) => {
+        const base = f.poeticLines[idx % f.poeticLines.length];
+        if (base) lines.push(base);
+      });
+      if (lines.length < desiredLines && flowers[0]?.poeticLines[1]) {
+        lines.push(flowers[0].poeticLines[1]);
+      }
+      return lines.slice(0, desiredLines).map(wrapLine).join("\n");
     }
 
-    // Add a soft closing line based on dominant keywords
-    const keyCounts = new Map();
-    for (const f of flowers) for (const k of f.keywords) keyCounts.set(k, (keyCounts.get(k) || 0) + 1);
-    const top = [...keyCounts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
-
-    const closing =
-      top.includes("calm") || top.includes("comfort")
-        ? "And in your presence, my heart learns to be quiet."
-        : top.includes("warmth") || top.includes("loyalty")
-          ? "And somehow, I keep turning toward you."
-          : top.includes("romance") || top.includes("tenderness")
-            ? "Soft love, blooming slowly—still blooming."
-            : "I don’t know how to say it plainly, so I made it in flowers.";
-
-    // Format like your example (3 lines + closing)
-    // If many flowers selected, keep it readable: show first 4 lines, then a gentle summary line.
-    const maxLines = 4;
-    const trimmed = lines.slice(0, maxLines);
-
-    if (lines.length > maxLines) {
-      trimmed.push("…and the rest feels like a secret kept in petals.");
+    const bodyTarget = Math.min(4, Math.max(2, flowers.length - 1));
+    const reservoir = [];
+    flowers.forEach((f, idx) => {
+      if (f.poeticLines[0]) reservoir.push(f.poeticLines[0]);
+      if (f.poeticLines[1] && (idx % 2 === 0)) reservoir.push(f.poeticLines[1]);
+    });
+    const body = [];
+    for (const line of reservoir) {
+      if (!line) continue;
+      body.push(line);
+      if (body.length === bodyTarget) break;
+    }
+    while (body.length < bodyTarget && flowers[body.length % flowers.length]) {
+      const fallback = flowers[body.length % flowers.length].poeticLines[1];
+      if (fallback) body.push(fallback);
+      else break;
     }
 
-    trimmed.push(closing);
+    const lines = [...body, closingLine(ids)].filter(Boolean).slice(0, 5);
+    return lines.map(wrapLine).join("\n");
+  }
 
-    // Make it a paragraph-ish poem
-    return trimmed.map(s => `“${s}”`).join("\n");
+  function wrapLine(line) {
+    return `“${line}”`;
+  }
+
+  function closingLine(ids) {
+    if (ids.includes("babysbreath")) {
+      return "I want this softness to stay, almost forever.";
+    }
+    if (ids.includes("lavender")) {
+      return "Everything feels calm and safe with you.";
+    }
+    if (ids.includes("sunflower")) {
+      return "You stay warm beside me, like quiet sunlight.";
+    }
+    if (ids.includes("tulip")) {
+      return "I keep choosing you, softly and surely.";
+    }
+    return "I hold you gently, staying close.";
   }
 
   // ---- Helpers: base64url
