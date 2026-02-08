@@ -6,17 +6,19 @@
   <title>Floating Sky Valentine</title>
   <meta name="theme-color" content="#f6f3ff" />
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" href="data:,">
 </head>
 
 <body>
-  <!-- Ambient layers -->
+  <!-- reminder: run this thing on a real local server or it gets grumpy -->
+  <!-- dreamy sky clutter -->
   <div class="sky">
     <div class="sky-gradient"></div>
     <div class="clouds clouds-a"></div>
     <div class="clouds clouds-b"></div>
     <div class="sparkles" aria-hidden="true"></div>
 
-    <!-- Floating islands (decor) -->
+    <!-- floating islands doing their cute thing -->
     <div class="island i1"></div>
     <div class="island i2"></div>
     <div class="island i3"></div>
@@ -24,7 +26,7 @@
 
   <canvas id="petals"></canvas>
 
-  <!-- HUD -->
+  <!-- lil hud so we know where we are -->
   <header class="hud glass">
     <div class="hud-left">
       <div class="badge">☁️ floating sky world</div>
@@ -37,177 +39,265 @@
 
   <main class="stage" id="stage">
 
-  <!-- Scene 1 -->
+  <!-- scene 1 bouquet chaos -->
 <section class="scene active scene-bouquet" data-scene="1" id="scene1" aria-label="Flower Language Bouquet">
   <div class="sky-bg" aria-hidden="true"></div>
 
-  <!-- Full-screen overlay when opening a gift link -->
-  <div id="giftOverlay" class="gift-overlay" hidden>
-    <div class="gift-overlay-inner glass soft">
-      <div class="gift-title">Someone made this for you.</div>
+      <!-- full screen love bomb when someone opens a gift link -->
+      <div id="giftOverlay" class="gift-overlay" hidden>
+        <div class="gift-overlay-inner glass soft">
+          <div class="gift-title">Someone made this for you.</div>
 
-      <div class="gift-preview">
-        <div class="bouquet-wrap large" aria-hidden="true">
-          <div class="bouquet-silhouette"></div>
-          <div id="giftBouquetCanvas" class="bouquet-canvas"></div>
-        </div>
+            <div class="gift-preview">
+            <div class="bouquet-stage">
+              <div class="bouquet-wrap large" aria-hidden="true">
+                <div class="bouquet-silhouette"></div>
+                <div id="giftBouquetCanvas" class="bouquet-canvas"></div>
+              </div>
+            </div>
 
-        <div class="gift-message">
-          <div class="muted tiny">Their bouquet says…</div>
-          <div id="giftMessage" class="poem"></div>
+            <div class="gift-message">
+              <div class="muted tiny">Their bouquet says…</div>
+              <div id="giftMessage" class="poem"></div>
+            </div>
+          </div>
+
+          <button id="makeOneBackBtn" class="btn primary">Make one back</button>
         </div>
       </div>
 
-      <button id="makeOneBackBtn" class="btn primary">Make one back</button>
-    </div>
-  </div>
+      <div class="scene-inner glass">
+        <h1 class="title">Flowers that won't make you sneeze</h1>
+        <p class="subtitle">Let the flowers tell what's in our hearts</p>
 
-  <div class="scene-inner glass">
-    <h1 class="title">Flower Language Bouquet</h1>
-    <p class="subtitle">A quiet, magical place where feelings are arranged like flowers.</p>
+        <div class="panel glass soft bouquet-panel">
+          <!-- left column = flower stash -->
+          <div class="col col-left">
+            <div class="col-header">
+              <h2 class="col-title">Flower library</h2>
+              <p class="col-subtitle">Tap a flower to reveal its language.</p>
+            </div>
 
-    <div class="panel glass soft bouquet-panel">
-      <!-- LEFT: Flower Library -->
-      <div class="col col-left">
-        <div class="col-header">
-          <h2 class="col-title">Flower library</h2>
-          <p class="col-subtitle">Tap a flower to reveal its language.</p>
-        </div>
+            <div id="flowerGrid" class="flower-grid" aria-label="Flower Library"></div>
+          </div>
 
-        <div id="flowerGrid" class="flower-grid" aria-label="Flower Library"></div>
-      </div>
+          <!-- middle column is where the mess happens -->
+          <div class="col col-center">
+            <div class="col-header center-head">
+              <h2 class="col-title">Build your bouquet</h2>
+              <div id="counter" class="counter-pill">0 / 7 flowers</div>
+            </div>
 
-      <!-- CENTER: Bouquet Canvas -->
-      <div class="col col-center">
-        <div class="col-header center-head">
-          <h2 class="col-title">Build your bouquet</h2>
-          <div id="counter" class="counter-pill">0 / 7 flowers</div>
-        </div>
+            <div class="bouquet-stage">
+              <div class="bouquet-wrap" aria-label="Bouquet Canvas">
+                <div class="bouquet-silhouette" aria-hidden="true"></div>
+                <div id="bouquetCanvas" class="bouquet-canvas" role="application"></div>
+              </div>
+            </div>
 
-        <div class="bouquet-stage">
-          <div class="bouquet-wrap" aria-label="Bouquet Canvas">
-            <div class="bouquet-silhouette" aria-hidden="true"></div>
-            <div id="bouquetCanvas" class="bouquet-canvas" role="application"></div>
+            <button id="sealBtn" class="btn primary seal-btn" disabled>
+              Seal bouquet
+            </button>
+
+            <button id="continue1" class="btn ghost continue-btn" hidden>
+              Continue
+            </button>
+          </div>
+
+          <!-- right column what the bouquet thinks -->
+          <div class="col col-right">
+            <div class="col-header">
+              <h2 class="col-title">Your bouquet says…</h2>
+              <p class="col-subtitle">A message grows as you choose.</p>
+            </div>
+
+            <div class="say-panel">
+              <div class="muted tiny">Selected</div>
+              <div id="selectedList" class="selected-list" aria-label="Selected flowers"></div>
+
+              <div class="divider"></div>
+
+              <div class="muted tiny">Message</div>
+              <div id="poem" class="poem" aria-live="polite"></div>
+            </div>
           </div>
         </div>
-
-        <button id="sealBtn" class="btn primary seal-btn" disabled>
-          Seal bouquet
-        </button>
-
-        <!-- keep as hook for your existing scene navigation -->
-        <button id="continue1" class="btn ghost continue-btn" hidden>
-          Continue
-        </button>
       </div>
 
-      <!-- RIGHT: Your bouquet says… -->
-      <div class="col col-right">
-        <div class="col-header">
-          <h2 class="col-title">Your bouquet says…</h2>
-          <p class="col-subtitle">A message grows as you choose.</p>
-        </div>
+      <!-- seal modal -->
+      <div id="sealModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="sealTitle">
+        <div class="modal-backdrop" data-close="1"></div>
 
-        <div class="say-panel">
-          <div class="muted tiny">Selected</div>
-          <div id="selectedList" class="selected-list" aria-label="Selected flowers"></div>
-
-          <div class="divider"></div>
-
-          <div class="muted tiny">Message</div>
-          <div id="poem" class="poem" aria-live="polite"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Seal Modal -->
-  <div id="sealModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="sealTitle">
-    <div class="modal-backdrop" data-close="1"></div>
-
-    <div class="modal-card glass soft">
-      <div class="modal-head">
-        <div>
-          <div id="sealTitle" class="modal-title">Gift bouquet</div>
-          <div class="muted tiny">A little ritual, sealed into a link.</div>
-        </div>
-        <button class="icon-btn" id="closeModalBtn" aria-label="Close">✕</button>
-      </div>
-
-      <div class="modal-body">
-        <div class="modal-preview">
-          <div class="bouquet-wrap" aria-hidden="true">
-            <div class="bouquet-silhouette"></div>
-            <div id="modalBouquetCanvas" class="bouquet-canvas"></div>
+        <div class="modal-card glass soft">
+          <div class="modal-head">
+            <div>
+              <div id="sealTitle" class="modal-title">Gift bouquet</div>
+              <div class="muted tiny">A little ritual, sealed into a link.</div>
+            </div>
+            <button class="icon-btn" id="closeModalBtn" aria-label="Close">✕</button>
           </div>
-        </div>
 
-        <div class="modal-message">
-          <div class="muted tiny">Your bouquet says…</div>
-          <div id="modalPoem" class="poem"></div>
+          <div class="modal-body">
+            <div class="modal-preview">
+              <div class="bouquet-stage">
+                <div class="bouquet-wrap" aria-hidden="true">
+                  <div class="bouquet-silhouette"></div>
+                  <div id="modalBouquetCanvas" class="bouquet-canvas"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-message">
+              <div class="muted tiny">Your bouquet says…</div>
+              <div id="modalPoem" class="poem"></div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button id="copyGiftLinkBtn" class="btn primary">Copy gift link</button>
+            <button id="modalContinueBtn" class="btn ghost">Continue</button>
+          </div>
+
+          <div id="copyHint" class="tiny muted" style="margin-top:10px;"></div>
         </div>
       </div>
+    </section>
 
-      <div class="modal-actions">
-        <!--copyLinkBtn -->
-        <button id="copyGiftLinkBtn" class="btn primary">Copy gift link</button>
-        <button id="modalContinueBtn" class="btn ghost">Continue</button>
-      </div>
-
-      <div id="copyHint" class="tiny muted" style="margin-top:10px;"></div>
-    </div>
-  </div>
-</section>
-
-    <!-- Scene 2 -->
+    <!-- scene 2 slot machine -->
     <section class="scene" data-scene="2" id="scene2">
       <div class="scene-inner glass">
         <h1 class="title">Luck &amp; Love</h1>
-        <p class="subtitle">Spin softly. The sky decides.</p>
+        <p class="subtitle">Hold the reels, chase a win, tease the Lego.</p>
 
-        <div class="panel glass soft center">
-          <div class="wheel-wrap">
-            <div class="wheel" id="wheel">
-              <div class="wheel-center">♡</div>
-              <div class="wheel-pointer" aria-hidden="true"></div>
-              <!-- wedges injected by JS -->
-            </div
+        <div class="panel glass soft slot" id="slot">
+          <div class="back-row">
+            <button class="btn ghost sm" type="button" data-back="1">← back to Scene 1</button>
+            <span class="tiny muted back-hint">you can go back anytime</span>
+          </div>
+          <div class="slot-top">
+            <div class="spins">Spins left: <span id="spinsLeft">100</span></div>
+            <div class="hint tiny muted" id="slotHint"></div>
           </div>
 
-          <div class="row center">
-            <button class="btn" id="spinBtn">Spin</button>
-            <button class="btn ghost" id="continue2" disabled>Continue</button>
+          <div class="machine" id="machine">
+            <div class="payline" aria-hidden="true"></div>
+
+            <div class="reel" data-reel="0">
+              <button class="hold-btn" id="hold0" type="button" aria-pressed="false" data-off="HOLD" data-on="HELD">HOLD</button>
+              <div class="reel-window">
+                <div class="reel-strip" id="strip0"></div>
+              </div>
+            </div>
+
+            <div class="reel" data-reel="1">
+              <button class="hold-btn" id="hold1" type="button" aria-pressed="false" data-off="HOLD" data-on="HELD">HOLD</button>
+              <div class="reel-window">
+                <div class="reel-strip" id="strip1"></div>
+              </div>
+            </div>
+
+            <div class="reel" data-reel="2">
+              <button class="hold-btn" id="hold2" type="button" aria-pressed="false" data-off="HOLD" data-on="HELD">HOLD</button>
+              <div class="reel-window">
+                <div class="reel-strip" id="strip2"></div>
+              </div>
+            </div>
           </div>
 
-          <div class="result glass soft hidden" id="spinResult">
+          <div class="slot-actions">
+            <button class="btn" id="spinBtn" type="button">Spin</button>
+            <button class="btn ghost" id="continue2" type="button" disabled>Continue</button>
+          </div>
+
+          <div class="result glass soft hidden" id="spinResult" aria-live="polite">
             <div class="result-title" id="resultTitle">—</div>
-            <div class="tiny muted">(*The wheel can land on everything but Lego.)</div>
+            <div class="tiny muted" id="resultSub"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Scene 3 -->
+    <!-- scene 3: vault -->
     <section class="scene" data-scene="3" id="scene3">
       <div class="scene-inner glass">
         <h1 class="title">Memory Vault</h1>
-        <p class="subtitle">We’ll think about it later.</p>
+        <p class="subtitle">A soft lock on a letter only you can read.</p>
 
-        <div class="panel glass soft center">
+        <div class="panel glass soft center vault-panel">
+          <div class="back-row">
+            <button class="btn ghost sm" type="button" data-back="2">← back to Scene 2</button>
+            <span class="tiny muted back-hint">you can go back anytime</span>
+          </div>
+          <article id="vaultLetter" class="letter glass soft hidden">
+            <h2 class="panel-title" style="margin: 0 0 10px;">memory letter</h2>
+            <div class="letter-scroll">
+              <p>dear giorgi,</p>
+              <p>i don’t quite know when “us” started, however here we are…</p>
+              <p>back in september, we met, we talked, and the whole mp journey began. it wasn’t easy, yet i found comfort in your presence. in our smoking breaks, in our conversations, in the way just talking to you made a day slightly better.</p>
+              <p>remember when we did those 36 questions to fall in love? we definitely didn’t fall in love from them, but i do believe they made us feel closer. especially the fact that we actually finished all of them. that says something.</p>
+              <p>to be honest, baby, back then you became a bit insufferable. you were kind of leading me on, and i won’t lie, you did piss me off. you needed space, and i gave you that, but in my head it was more like, “we don’t get along, so better fuck off.”</p>
+              <p>and then something happened again. mp. that damn place pulled us back together once more, but this time i was thinking nothing but my bro. my brother. truly platonic intentions.</p>
+              <p>even when you said you’d be lying if you said i wasn’t your type. even when you called me princess. amio. amore. pookie. all as a joke, and still my heart was smiling inside.</p>
+              <p>there were moments when you pulled something that made me so flustered i couldn’t even look you in the eyes. still, i kept telling myself: friend.</p>
+              <p>even when you were protective of me when i was in switzerland. you gave me your support, and i accepted it with the simple thought of what a good friend you are.</p>
+              <p>then came christmas break. daily messages. daily check-ups. first person to text, last person to say good night to. that’s what friends do. good friends.</p>
+              <p>new year’s eve. i was tipsy and missing you like crazy. lots of words were said. one of them was yours: “only you.” and i just froze.</p>
+              <p>after that, i don’t think i could call us friends anymore.</p>
+              <p>i was waiting to see you, and when we finally met, i just remember how much i missed you. and for the first time, i could finally hold your hand as… us, i guess.</p>
+              <p>then the 10th of january. we kissed outside burger king at arco di travertino. couldn’t call us friends after that for sure.</p>
+              <p>this is how it happened in my head, from my side. it was a bit of a rollercoaster, a very slight one, but it went in a pretty good direction, and i’m really happy about that.</p>
+              <p>even though i was a bit in the dark, convincing myself that we were definitely platonic, because i didn’t want to hope for anything else. i kept telling myself you’re just a good man who treats everyone kindly.</p>
+              <p>but i’m happy where we are now. and i’m happy to spend this valentine with you.</p>
+              <p>— dana</p>
+            </div>
+
+            <div class="letter-actions">
+              <button class="btn ghost" id="continue3PublicAlt" type="button">
+                continue to the question
+              </button>
+            </div>
+          </article>
+
+          <div class="row center vault-private-continue hidden" id="vaultPrivateContinueRow">
+            <button class="btn primary" id="continue3" type="button" disabled aria-disabled="true">continue</button>
+          </div>
+
           <div class="vault">
             <div class="vault-door"></div>
             <div class="vault-glow"></div>
           </div>
-          <p class="tiny muted">A door that hums quietly, like it remembers you.</p>
-          <button class="btn" id="continue3">Continue</button>
+          <p class="tiny muted">It hums quietly, waiting for the right password.</p>
+
+          <div id="vaultLock" class="vault-lock glass soft">
+            <p class="vault-prompt tiny muted">password (2 letters): where was our first kiss?</p>
+            <p class="tiny muted vault-subhint">only you know this.</p>
+            <div class="vault-input-row">
+              <input id="vaultPwd" class="vault-input" type="text" inputmode="text" maxlength="2" placeholder="__" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="vault password (2 letters)" />
+              <button id="vaultUnlockBtn" class="btn primary" type="button">unlock</button>
+            </div>
+            <div id="vaultErr" class="tiny error" aria-live="polite" style="min-height:18px"></div>
+            <p class="tiny muted vault-hint">hint: 🍔👑</p>
+            <noscript>
+              <p class="tiny muted" style="margin-top:10px;">this vault needs javascript to unlock ✨</p>
+            </noscript>
+          </div>
+
+          <div class="row center vault-public-continue">
+            <button class="btn ghost" id="continue3Public" type="button">
+              continue to the question
+            </button>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Scene 4 -->
+    <!-- scene 4 the actual question, no pressure -->
     <section class="scene" data-scene="4" id="scene4">
       <div class="scene-inner glass">
         <div class="card glow-card glass soft">
+          <div class="back-row">
+            <button class="btn ghost sm" type="button" data-back="3">← back to Scene 3</button>
+          </div>
           <h1 class="title big">Would you like to be my Valentine?</h1>
 
           <div class="row center">
