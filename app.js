@@ -1333,8 +1333,6 @@ continue2.addEventListener("click", ()=>{
   const vaultErr = document.querySelector("#vaultErr");
   const vaultLock = document.querySelector("#vaultLock");
   const vaultLetter = document.querySelector("#vaultLetter");
-  const continue3Btn = document.querySelector("#continue3");
-  const vaultPrivateContinueRow = document.querySelector("#vaultPrivateContinueRow");
   const continue3PublicButtons = Array.from(document.querySelectorAll("#continue3Public, #continue3PublicAlt"));
 
   const normalize = (v) => String(v || "").trim().toUpperCase().slice(0, 2);
@@ -1346,7 +1344,7 @@ continue2.addEventListener("click", ()=>{
     });
   });
 
-  if (!vaultPwd || !vaultUnlockBtn || !vaultLock || !vaultLetter || !continue3Btn) return;
+  if (!vaultPwd || !vaultUnlockBtn || !vaultLock || !vaultLetter) return;
 
   const VAULT_PASSWORD = "BK";
   let unlocked = false;
@@ -1360,9 +1358,6 @@ continue2.addEventListener("click", ()=>{
     unlocked = true;
     vaultLock.classList.add("hidden");
     vaultLetter.classList.remove("hidden");
-    continue3Btn.disabled = false;
-    continue3Btn.removeAttribute("aria-disabled");
-    vaultPrivateContinueRow?.classList.remove("hidden");
     showErr("");
     try { spawnPetalBurst?.(40); } catch {}
     try { showToast?.("Vault unlocked ✨"); } catch {}
@@ -1394,11 +1389,6 @@ continue2.addEventListener("click", ()=>{
     showErr("");
   });
 
-  continue3Btn.addEventListener("click", () => {
-    if (!unlocked) return;
-    try { unlockNext?.(); } catch {}
-    try { showScene?.(4); } catch {}
-  });
 })();
 
 /* -------------------------

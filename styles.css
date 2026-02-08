@@ -680,15 +680,6 @@ body{
 .vault-public-continue .btn{
   min-width:220px;
 }
-.vault-private-continue{
-  width:100%;
-  margin-top:12px;
-  position:relative;
-  z-index:2;
-}
-.vault-private-continue .btn{
-  min-width:220px;
-}
 
 @keyframes slotShake{
   0%{ transform: translateX(0); }
