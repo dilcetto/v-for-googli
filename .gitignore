@@ -1,0 +1,20 @@
+# macos being macos
+.DS_Store
+
+# editor leftovers
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# local server and tooling noise
+node_modules/
+.cache/
+.parcel-cache/
+dist/
+coverage/
+
+# local environment files should never become valentine lore
+.env
+.env.*
+!.env.example
